@@ -1,0 +1,18 @@
+{
+  "model": "Juggernaut-XI-byRunDiffusion.safetensors",
+  "sampler": "DPM++ 2M",
+  "scheduler": "Karras",
+  "steps": 35,
+  "cfg_scale": 4.0,
+  "lora": "<lora:add-detail-xl:0.3>",
+  "seed": 2109403926,
+  "prompt": "A macro photograph of a real chunky, stocky reef crab with a reddish-orange shell, seen from the front facing the camera and symmetrical, with a wide, rounded, heavy shell, short thick sturdy legs tucked close to the body and big bulky claws held in front, a compact solid silhouette, the entire crab visible, natural wet shell texture with fine bumps and pores, true-to-life natural colours, isolated on a plain pure white background, soft even diffused daylight, neutral white balance, accurate natural colour, sharp focus, photorealistic, highly detailed",
+  "negative_prompt": "fish, other animals, water, bubbles, aquarium, scenery, background, shadow, text, watermark, cropped, cut off, blurry, oversaturated, neon, overexposed, colour cast, cartoon, illustration, 3d render, toy, plastic, cooked crab",
+  "width": 1216,
+  "height": 832,
+  "enable_hr": true,
+  "hr_scale": 1.5,
+  "hr_upscaler": "R-ESRGAN 4x+",
+  "denoising_strength": 0.4,
+  "hr_second_pass_steps": 35
+}

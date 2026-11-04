@@ -27,7 +27,7 @@ W, H = 1920, 1080
 # Mirrors of constants in AquariumScene.xml / .brs.
 BG_DRIFT = (-96, -54)
 FG_DRIFT = (-170, -60)
-RAYS_PIVOT = (992.4, -324)
+RAYS_PIVOT = (992, -540)
 RAYS_OFFSET = -90
 CRAB_LIT = (0xCB, 0xE4, 0xFF)
 
@@ -102,7 +102,12 @@ class Renderer:
         if crab and shot.get("crab"):
             cx, cy = shot["crab"]
             img = multiply(self.sprite(f"critter_{crab['id']}.png"), CRAB_LIT)
-            backdrop.alpha_composite(img, (int(cx - crab["w"] / 2), int(cy - crab["h"])))
+            k = 1 + (cy - crab["sandY"][0]) * crab.get("depthScale", 0)
+            if k != 1:
+                img = img.resize((round(img.width * k), round(img.height * k)), Image.LANCZOS)
+            if crab.get("tilt"):
+                img = img.rotate(math.degrees(crab["tilt"]), resample=Image.BICUBIC)
+            backdrop.alpha_composite(img, (int(cx - img.width / 2), int(cy - img.height)))
         elif crab and shot.get("cave_bubbles", True):
             # Only while the crab is hidden: dim in the cave, bright once clear of it.
             ex, ey = crab["bubbleFrom"]
@@ -152,7 +157,7 @@ class Renderer:
 # Each shot is a moment the screensaver can actually show. Shark shots keep the
 # tank sparse, since fish stop entering 30 s before it arrives.
 SHOTS = {
-    "hero": dict(drift=0.25, seed=3, rays=(0.9, 0.55, 0.8), ray_rot=-0.01, fish=[
+    "hero": dict(drift=0.25, seed=3, rays=(0.9, 0.55, 0.8), ray_rot=-0.005, fish=[
         dict(id="emperor_angel", x=720, y=330, d=1.0, face="r"),
         dict(id="blue_tang", x=1130, y=470, d=0.95, face="l"),
         dict(id="clownfish", x=560, y=600, d=0.9, face="r"),
@@ -163,7 +168,7 @@ SHOTS = {
         dict(id="royal_gramma", x=260, y=520, d=0.6, face="r"),
         dict(id="butterflyfish", x=1460, y=440, d=0.6, face="l"),
     ]),
-    "reef": dict(drift=0.6, seed=8, rays=(0.6, 0.9, 0.5), ray_rot=0.012, fish=[
+    "reef": dict(drift=0.6, seed=8, rays=(0.6, 0.9, 0.5), ray_rot=0.006, fish=[
         dict(id="lionfish", x=1020, y=330, d=0.95, face="l"),
         dict(id="moorish_idol", x=420, y=420, d=0.9, face="r"),
         dict(id="mandarin", x=760, y=760, d=0.85, face="r"),
@@ -174,7 +179,7 @@ SHOTS = {
         dict(id="flame_angel", x=1240, y=520, d=0.5, face="r"),
         dict(id="royal_gramma", x=930, y=560, d=0.5, face="l"),
     ]),
-    "crab": dict(drift=0.45, seed=5, crab=(950, 995), rays=(0.7, 0.7, 0.9), ray_rot=0.0, fish=[
+    "crab": dict(drift=0.45, seed=5, crab=(985, 1040), rays=(0.7, 0.7, 0.9), ray_rot=0, fish=[
         dict(id="flame_angel", x=500, y=460, d=0.95, face="r"),
         dict(id="butterflyfish", x=1260, y=380, d=0.85, face="l"),
         dict(id="emperor_angel", x=820, y=230, d=0.7, face="l"),
@@ -182,13 +187,13 @@ SHOTS = {
         dict(id="chromis", x=300, y=200, d=0.55, face="r", school=5, seed=9),
         dict(id="royal_gramma", x=1100, y=640, d=0.5, face="r"),
     ]),
-    "shark": dict(drift=0.8, seed=6, rays=(0.85, 0.5, 0.75), ray_rot=-0.015,
+    "shark": dict(drift=0.8, seed=6, rays=(0.85, 0.5, 0.75), ray_rot=-0.0075,
                   shark=dict(x=520, y=250, d=0.95, face="r"), fish=[
         dict(id="yellow_tang", x=1520, y=660, d=0.55, face="r"),
         dict(id="chromis", x=180, y=720, d=0.5, face="l", school=5, seed=7),
         dict(id="moorish_idol", x=1250, y=150, d=0.5, face="r"),
     ]),
-    "school": dict(drift=0.05, seed=12, rays=(1.0, 0.45, 0.6), ray_rot=0.018, fish=[
+    "school": dict(drift=0.05, seed=12, rays=(1.0, 0.45, 0.6), ray_rot=0.009, fish=[
         dict(id="chromis", x=980, y=300, d=0.95, face="r", school=7, seed=21),
         dict(id="chromis", x=640, y=560, d=0.75, face="l", school=6, seed=5),
         dict(id="emperor_angel", x=260, y=330, d=0.85, face="r"),

@@ -12,7 +12,7 @@
         <!-- Beams are split across three layers that fade out of phase, so they shimmer independently. -->
         <!-- They fan out from the sun above the top edge (SUN / RAYS_PAD in tools/process.py)
              and sway by rotating gently around it. -->
-        <Group id="rays" translation="[-90, 0]" scaleRotateCenter="[992.4, -324]">
+        <Group id="rays" translation="[-90, 0]" scaleRotateCenter="[992, -540]">
             <Poster id="rays0" uri="pkg:/images/rays_0.png" width="2100" height="1080" />
             <Poster id="rays1" uri="pkg:/images/rays_1.png" width="2100" height="1080" />
             <Poster id="rays2" uri="pkg:/images/rays_2.png" width="2100" height="1080" />
@@ -46,9 +46,9 @@
                 keyValue="[0.9, 0.35, 0.8, 1.0, 0.2, 0.9]" />
         </Animation>
         <Animation id="raySway" duration="13" repeat="true" easeFunction="inOutQuad">
-            <!-- Radians; about ±1.1 degrees. -->
+            <!-- Radians; about ±0.6 degrees around the far-off sun, so the beams drift about 9 px. -->
             <FloatFieldInterpolator fieldToInterp="rays.rotation"
-                key="[0.0, 0.5, 1.0]" keyValue="[-0.02, 0.02, -0.02]" />
+                key="[0.0, 0.5, 1.0]" keyValue="[-0.01, 0.01, -0.01]" />
         </Animation>
     </children>
 </component>

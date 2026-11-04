@@ -7,6 +7,10 @@ which process.py then turns into Roku-ready images.
   python generate.py background         # just the background
   python generate.py clownfish chromis  # specific fish ids from assets.json
   python generate.py --force -n 6 blue_tang
+  python generate.py seagrass --start 10 -n 6 --model Juggernaut-XI-byRunDiffusion.safetensors       --sampler "DPM++ 2M" --steps 35 --cfg 4.5 --lora "<lora:add-detail-xl:0.4>"
+
+--model/--sampler/--scheduler/--steps/--cfg override assets.json for this run only,
+and --lora is appended to every prompt. Each candidate's .json records what was used.
 """
 import argparse
 import base64
@@ -33,12 +37,17 @@ def txt2img(url, cfg, payload):
         "override_settings_restore_afterwards": False,
         **payload,
     }
+    if cfg.get("lora"):
+        body["prompt"] = f"{body['prompt']} {cfg['lora']}"
     r = requests.post(f"{url}/sdapi/v1/txt2img", json=body, timeout=600)
     r.raise_for_status()
     return base64.b64decode(r.json()["images"][0])
 
 
-def save(path, png, meta):
+def save(path, png, meta, cfg=None):
+    if cfg:
+        meta = {"model": cfg["model"], "sampler": cfg["sampler"], "scheduler": cfg["scheduler"],
+                "steps": cfg["steps"], "cfg_scale": cfg["cfg_scale"], "lora": cfg.get("lora"), **meta}
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(png)
     path.with_suffix(".json").write_text(json.dumps(meta, indent=2))
@@ -65,7 +74,7 @@ def gen_background(url, cfg, n, force, start=0):
             "hr_second_pass_steps": cfg["steps"],
         }
         print(f"background {i} (seed {seed})")
-        save(out, txt2img(url, cfg, payload), {"seed": seed, **payload})
+        save(out, txt2img(url, cfg, payload), {"seed": seed, **payload}, cfg)
 
 
 def add_hires(payload, item, cfg):
@@ -97,7 +106,7 @@ def gen_fish(url, cfg, fish, n, force, start=0):
         }
         add_hires(payload, fish, cfg)
         print(f"{fish['id']} {i} (seed {seed})")
-        save(out, txt2img(url, cfg, payload), {"seed": seed, **payload})
+        save(out, txt2img(url, cfg, payload), {"seed": seed, **payload}, cfg)
 
 
 def gen_decor(url, cfg, item, n, force, start=0, folder="decor"):
@@ -108,15 +117,15 @@ def gen_decor(url, cfg, item, n, force, start=0, folder="decor"):
             continue
         seed = random.randint(0, 2**31 - 1)
         payload = {
-            "prompt": f"{item['prompt']}, {common['suffix']}",
-            "negative_prompt": common["negative"],
+            "prompt": f"{item['prompt']}, {item.get('suffix', common['suffix'])}",
+            "negative_prompt": item.get("negative", common["negative"]),
             "width": item["width"],
             "height": item["height"],
             "seed": seed,
         }
         add_hires(payload, item, cfg)
         print(f"{item['id']} {i} (seed {seed})")
-        save(out, txt2img(url, cfg, payload), {"seed": seed, **payload})
+        save(out, txt2img(url, cfg, payload), {"seed": seed, **payload}, cfg)
 
 
 def main():
@@ -125,10 +134,20 @@ def main():
     ap.add_argument("-n", "--candidates", type=int, help="candidates per asset (overrides assets.json)")
     ap.add_argument("--force", action="store_true", help="regenerate even if files exist")
     ap.add_argument("--start", type=int, default=0, help="first candidate number (to add to an existing set)")
+    ap.add_argument("--model", help="checkpoint (default: assets.json)")
+    ap.add_argument("--sampler")
+    ap.add_argument("--scheduler")
+    ap.add_argument("--steps", type=int)
+    ap.add_argument("--cfg", type=float, help="CFG scale")
+    ap.add_argument("--lora", help='appended to prompts, e.g. "<lora:add-detail-xl:0.4>"')
     ap.add_argument("--url", default="http://127.0.0.1:7860")
     args = ap.parse_args()
 
     cfg = json.loads((HERE / "assets.json").read_text())
+    for key, val in (("model", args.model), ("sampler", args.sampler), ("scheduler", args.scheduler),
+                     ("steps", args.steps), ("cfg_scale", args.cfg), ("lora", args.lora)):
+        if val is not None:
+            cfg[key] = val
     fish_by_id = {f["id"]: f for f in cfg["fish"]}
     decor_by_id = {d["id"]: d for d in cfg.get("decor", [])}
     critters_by_id = {c["id"]: c for c in cfg.get("critters", [])}

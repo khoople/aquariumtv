@@ -51,15 +51,19 @@
      "x": 1487, "h": 430, "sink": 90, "flip": true, "defocus": 0.4, "sway": 0},
     {"id": "seagrass", "prompt": "professional macro photograph of a dense lush clump of marine seagrass, many long slender ribbon-like leaves growing upward and gently arching, crisp leaf edges, fine parallel leaf veins, rich natural green with subtle yellow tips, rooted in a small mound of sand",
      "width": 832, "height": 1216, "hr_scale": 1.5, "hr_denoise": 0.4,
-     "x": 110, "h": 380, "sink": 90, "defocus": 0.4, "sway": 0.008, "sway_period": 18, "bubbles": 8}
+     "x": 110, "h": 570, "sink": 160, "defocus": 0.4, "sway": 0.008, "sway_period": 18, "bubbles": 8}
   ],
 
   "critters": [
-    {"id": "crab", "prompt": "a chunky stocky red and orange reef crab, front view facing the camera, symmetrical, wide rounded heavy shell, short thick sturdy legs tucked close to the body, big bulky claws held in front, compact solid silhouette, entire crab visible",
+    {"id": "crab", "prompt": "A macro photograph of a real chunky, stocky reef crab with a reddish-orange shell, seen from the front facing the camera and symmetrical, with a wide, rounded, heavy shell, short thick sturdy legs tucked close to the body and big bulky claws held in front, a compact solid silhouette, the entire crab visible, natural wet shell texture with fine bumps and pores, true-to-life natural colours",
+     "suffix": "isolated on a plain pure white background, soft even diffused daylight, neutral white balance, accurate natural colour, sharp focus, photorealistic, highly detailed",
+     "negative": "fish, other animals, water, bubbles, aquarium, scenery, background, shadow, text, watermark, cropped, cut off, blurry, oversaturated, neon, overexposed, colour cast, cartoon, illustration, 3d render, toy, plastic, cooked crab",
      "width": 1216, "height": 832, "hr_scale": 1.5, "hr_denoise": 0.4, "size": 110,
      "home": [1010, 880], "mouth": [1015, 935], "home_scale": 0.75,
-     "_comment": "sand_x is where the crab's whole body must stay (left of the rock beside the cave); sand_y is where its feet stop",
-     "sand_x": [830, 1065], "sand_y": [970, 1010],
+     "_comment": "The crab walks home -> mouth -> via -> a random spot on the open sand, and back the same way. via keeps it on the sandy path out of the cave (clear of the rocks either side). sand_x bounds its whole body (between the dark rocks on the left and the rock beside the cave); sand_y is where its feet stop. walk_speed is px/s; depth_scale grows it slightly per px nearer the viewer than sand_y[0].",
+     "via": [1015, 1000],
+     "sand_x": [830, 1078], "sand_y": [1015, 1060],
+     "walk_speed": 9, "tilt": -0.012, "depth_scale": 0.0015,
      "bubbles": 3, "bubble_from": [1010, 855],
      "bubble_dark_until": 770, "bubble_lit_by": 725}
   ]

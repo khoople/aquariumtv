@@ -1,5 +1,11 @@
 {
-  "seed": 1047078024,
+  "model": "Juggernaut-XI-byRunDiffusion.safetensors",
+  "sampler": "DPM++ 2M",
+  "scheduler": "Karras",
+  "steps": 35,
+  "cfg_scale": 4.5,
+  "lora": "<lora:add-detail-xl:0.4>",
+  "seed": 572109220,
   "prompt": "professional macro photograph of a dense lush clump of marine seagrass, many long slender ribbon-like leaves growing upward and gently arching, crisp leaf edges, fine parallel leaf veins, rich natural green with subtle yellow tips, rooted in a small mound of sand, isolated on a plain pure white background, entire object fully visible, studio lighting, sharp focus, photorealistic, highly detailed",
   "negative_prompt": "fish, animals, water, bubbles, aquarium, scenery, background, shadow, text, watermark, cropped, cut off, blurry",
   "width": 832,
@@ -8,5 +14,5 @@
   "hr_scale": 1.5,
   "hr_upscaler": "R-ESRGAN 4x+",
   "denoising_strength": 0.4,
-  "hr_second_pass_steps": 6
+  "hr_second_pass_steps": 35
 }

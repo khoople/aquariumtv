@@ -1,7 +1,7 @@
 {
-  "background": "bg_01_4k_epic",
-  "decor": {"rock": "rock_08", "seagrass": "seagrass_00"},
-  "critters": {"crab": "crab_12"},
+  "background": "bg_01_4k_jugg",
+  "decor": {"rock": "rock_08_jugg", "seagrass": "seagrass_13"},
+  "critters": {"crab": "crab_22"},
   "fish": {
     "clownfish":     {"candidate": "clownfish_01",     "facing": "right"},
     "blue_tang":     {"candidate": "blue_tang_01",     "facing": "right"},

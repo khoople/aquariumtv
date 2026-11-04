@@ -31,7 +31,20 @@ FAR_SCALE = 0.7
 # Where the sunlight in the background comes from, as a fraction of the screen
 # (y < 0 is above the top edge). The rays layer is padded on both sides so it can
 # sway around this point; keep in sync with the "rays" Group in AquariumScene.xml.
-SUN = (0.47, -0.3)
+# Where the light rays fan out from, as a fraction of the screen: half a screen
+# height above the top, near the centre. That's where the beams painted into
+# the background converge, measured at the middle of the background drift. The rays
+# Group's scaleRotateCenter in AquariumScene.xml and RAYS_PIVOT in render_preview.py
+# are (SUN.x*1920 + RAYS_PAD, SUN.y*1080).
+SUN = (0.47, -0.5)
+# The painted beams' clusters as (degrees from straight down, relative strength),
+# measured from SUN. Rays are drawn on these so the shimmer runs along them.
+RAY_CLUSTERS = [(-25.1, 5.0), (-18.4, 15.8), (-7.8, 22.4), (3.8, 18.9), (17.3, 4.2), (23.6, 10.1)]
+# Beams left of LEFT_SOFT_FROM degrees fade toward LEFT_SOFT of their brightness by
+# LEFT_SOFT_AT degrees, so the left side stays softer than the bright centre.
+LEFT_SOFT, LEFT_SOFT_FROM, LEFT_SOFT_AT = 0.45, -7.0, -25.0
+# Overall strength of the rays (1 = as drawn).
+RAY_GAIN = 0.8
 RAYS_PAD = 90
 RAYS_SIZE = (SCREEN[0] + 2 * RAYS_PAD, SCREEN[1])
 
@@ -139,10 +152,11 @@ def wedge(origin, angle, width, length=4000):
             (ox + length * math.sin(a1), oy + length * math.cos(a1))]
 
 
-def light_rays(layer, layers=3, beams=17, seed=7):
-    """One of several ray layers, fanning out from the sun above the top of the
-    tank. Beams are dealt round-robin into layers so each layer spans the whole
-    fan; fading the layers out of phase makes individual beams flicker."""
+def light_rays(layer, layers=3, seed=7):
+    """One of several ray layers. Beams follow the clusters painted into the
+    background (RAY_CLUSTERS), a few per cluster, plus some faint strays. They're
+    shuffled and dealt round-robin into layers so each layer has some of every
+    cluster; fading the layers out of phase makes individual beams flicker."""
     rng = random.Random(seed)
     # Drawn at half resolution; the scene stretches it to RAYS_SIZE.
     w, h = RAYS_SIZE[0] // 2, RAYS_SIZE[1] // 2
@@ -150,14 +164,22 @@ def light_rays(layer, layers=3, beams=17, seed=7):
     soft = Image.new("L", (w, h), 0)
     sharp = Image.new("L", (w, h), 0)
     ds, dt = ImageDraw.Draw(soft), ImageDraw.Draw(sharp)
-    spread = math.radians(65)
-    for i in range(beams):
+    top = max(s for _, s in RAY_CLUSTERS)
+    beams = []
+    for deg, strength in RAY_CLUSTERS:
+        k = (strength / top) ** 0.5
+        for _ in range(2 + round(3 * k)):
+            a = deg + rng.uniform(-1.6, 1.6)
+            beams.append((a, int(rng.randint(60, 100) * (0.35 + 0.65 * k))))
+    for _ in range(4):
+        beams.append((rng.uniform(-31, 27), rng.randint(25, 40)))
+    left = lambda a: 1 - (1 - LEFT_SOFT) * min(max((LEFT_SOFT_FROM - a) / (LEFT_SOFT_FROM - LEFT_SOFT_AT), 0), 1)
+    beams = [(math.radians(a), int(b * left(a))) for a, b in beams]
+    rng.shuffle(beams)
+    for i, (angle, bright) in enumerate(beams):
         # Draw every beam's numbers so the layout is shared by all layers.
-        angle = ((i + rng.uniform(0.2, 0.8)) / beams * 2 - 1) * spread
-        width = math.radians(rng.uniform(1.2, 3.5))
-        # Light straight below the sun is strongest.
-        bright = int(rng.randint(55, 100) * (0.45 + 0.55 * math.cos(angle) ** 3))
-        streaks = [(rng.uniform(-0.4, 0.4), math.radians(rng.uniform(0.1, 0.3)), rng.randint(35, 75))
+        width = math.radians(rng.uniform(0.6, 1.6))
+        streaks = [(rng.uniform(-0.4, 0.4), math.radians(rng.uniform(0.05, 0.12)), rng.randint(35, 75))
                    for _ in range(2)]
         if i % layers != layer:
             continue
@@ -170,8 +192,8 @@ def light_rays(layer, layers=3, beams=17, seed=7):
     yy, xx = np.mgrid[0:h, 0:w]
     dist = np.hypot(xx - origin[0], yy - origin[1])
     near = -origin[1]
-    fade = np.clip(1 - (dist - near) / (h * 1.05), 0, 1) ** 1.4
-    alpha = Image.fromarray((np.asarray(img, dtype=float) * fade).astype(np.uint8))
+    fade = np.clip(1 - (dist - near) / (h * 0.85), 0, 1) ** 1.4
+    alpha = Image.fromarray((np.asarray(img, dtype=float) * fade * RAY_GAIN).astype(np.uint8))
     size = (w, h)
     rays = Image.new("RGBA", size, (210, 240, 255, 0))
     rays.putalpha(alpha)
@@ -256,7 +278,8 @@ def build(selection):
         h = round(img.height * c["size"] / img.width)
         save_sprite(img.resize((c["size"], h), Image.LANCZOS), OUT / f"critter_{c['id']}.png")
         critters.append({"id": c["id"], "w": c["size"], "h": h, "home": c["home"], "mouth": c["mouth"],
-                         "sandX": c["sand_x"], "sandY": c["sand_y"], "homeScale": c["home_scale"],
+                         "via": c.get("via", c["mouth"]), "walkSpeed": c.get("walk_speed", 12),
+                         "depthScale": c.get("depth_scale", 0), "tilt": c.get("tilt", 0), "sandX": c["sand_x"], "sandY": c["sand_y"], "homeScale": c["home_scale"],
                          "bubbles": c.get("bubbles", 0), "bubbleFrom": c.get("bubble_from", c["home"]),
                          "bubbleDarkUntil": c.get("bubble_dark_until"), "bubbleLitBy": c.get("bubble_lit_by")})
         print(f"critter {c['id']} <- {name} ({c['size']}x{h})")

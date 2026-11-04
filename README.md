@@ -23,11 +23,25 @@ Run everything with the tools venv: `tools\.venv\Scripts\python.exe`.
    image, and the script mirrors it as needed.
 5. `python tools/process.py` builds `roku/images/`.
 
-Optional: `python tools/upscale.py bg_01 --model epicphotogasm_ultimateFidelity.safetensors --sampler "DPM++ 2M" --cfg 5 --steps 30 --tile 768 --overlap 192 --out bg_01_4k_epic`
-upscales a background to 4032×2304 (R-ESRGAN 2×, then a tiled SD img2img detail pass). The original is left untouched.
-The shipped background, `bg_01_4k_epic`, was made this way. Its 2016×1152 source has since been deleted, so a new upscale needs a newly generated background.
+Optional: `tools/upscale.py` sharpens a raw image: an ESRGAN-family upscaler, then a tiled SD img2img detail pass.
+The source file is left untouched. `--folder decor` (or `critters`, `fish`) works on other assets. The shipped
+background, `bg_01_4k_jugg`, and rock, `rock_08_jugg`, were made this way from earlier versions that have since been
+deleted, so these commands are a record of the settings rather than something you can rerun as-is. The background:
 
-Unused candidates were cleaned out of `tools/raw/`, so only the selected image for each asset remains.
+```
+python tools/upscale.py bg_01_4k_epic --downscale 0.5 --upscaler-file 4x-UltraSharp.safetensors --model Juggernaut-XI-byRunDiffusion.safetensors --sampler "DPM++ 2M" --scheduler karras --cfg 5 --steps 40 --denoise 0.3 --lora "<lora:add-detail-xl:0.5>" --prompt "A sharp, highly detailed underwater photograph of a saltwater coral reef, with intricate coral and rock texture, sea anemones, rippled white sand and clear deep blue water lit by sunlight caustics." --out bg_01_4k_jugg
+```
+
+The rock used `upscale.py rock_08 --folder decor --scale 2` with the same models and settings and the prompt
+"A sharp, highly detailed studio photograph of a single large reef live rock covered in pink coralline algae, with small
+zoanthid polyps and a few short branching corals, porous rock texture, isolated on a plain pure white background."
+
+They need `4x-UltraSharp.safetensors` in the WebUI's `models/ESRGAN`, Juggernaut XI and the Detail Tweaker XL LoRA.
+WebUI 1.10 can't load `.safetensors` upscalers, so `--upscaler-file` runs it through `tools/esrgan_local.py` with the
+WebUI's own Python.
+
+Unused candidates and old versions were cleaned out of `tools/raw/`, so only the selected image for each asset remains.
+The seagrass (`seagrass_13`) and crab (`crab_22`) were generated with Juggernaut XI; their `.json` files record the settings.
 `generate.py` skips numbers that already exist, so new candidates for an asset need `--start` to pick a free number.
 
 To add a species, add an entry to `assets.json` (`size` is its on-screen width in px at 1080p;

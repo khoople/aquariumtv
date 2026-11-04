@@ -208,6 +208,7 @@ sub addCritters()
         p.width = c.w
         p.height = c.h
         p.scaleRotateCenter = [c.w / 2, c.h]
+        p.rotation = c.tilt
         p.opacity = 0
 
         anim = p.createChild("Animation")
@@ -270,24 +271,74 @@ sub critterTrip(cr as object, delay as float)
     c = cr.spec
     home = c.home
     mouth = c.mouth
+    via = c.via
     ' Keep the whole body on open sand, not just the feet's centre point.
-    minX = c.sandX[0] + c.w / 2
-    maxX = c.sandX[1] - c.w / 2
-    outPt = [rand(minX, maxX), rand(c.sandY[0], c.sandY[1])]
-    ' A slow, deliberate creep out, a long look around, then back.
-    duration = rand(80, 95)
+    outY = rand(c.sandY[0], c.sandY[1])
+    os = 1 + (outY - c.sandY[0]) * c.depthScale
+    minX = c.sandX[0] + c.w * os / 2
+    maxX = c.sandX[1] - c.w * os / 2
+    outPt = [rand(minX, maxX), outY]
+
+    ' A slow, deliberate creep out along the sandy path: a peek from the cave
+    ' mouth, a couple of wary stops on the way, a look around, then back with
+    ' one more stop.
+    ' Walking legs take as long as their length needs at walkSpeed, so it
+    ' never speeds up on the longer trips.
+    midPt = [(via[0] + outPt[0]) / 2, (via[1] + outPt[1]) / 2]
+    sp = c.walkSpeed
+    toVia = pathLength(mouth, via) / sp
+    toMid = pathLength(via, midPt) / sp
 
     black = &h000000FF
     shadow = &h2A3444FF
+    dusk = &h9BAFC7FF
+    day = &hB3C9E3FF
     lit = &hCBE4FFFF
     hs = c.homeScale
     ms = hs + (1 - hs) * 0.35
-    ' key:    hidden  mouth   out     stand   mouth   hidden  rest
-    keys = [0.0, 0.14, 0.30, 0.70, 0.86, 0.98, 1.0]
-    points = [home, mouth, outPt, outPt, mouth, home, home]
-    scales = [hs, ms, 1.0, 1.0, ms, hs, hs]
-    colors = [black, shadow, lit, lit, shadow, black, black]
-    alphas = [0.0, 0.85, 1.0, 1.0, 0.85, 0.0, 0.0]
+    vs = ms + (1 - ms) * 0.7
+    mds = (vs + os) / 2
+
+    ' Each stop: where its feet are, seconds to get there from the previous
+    ' stop, scale, tint, opacity, and whether it walks to get there.
+    stops = [
+        [home, 0, hs, black, 0.0, false],
+        [mouth, 12.0, ms, shadow, 0.85, true],
+        [mouth, rand(2.5, 4), ms, shadow, 0.85, false],
+        [via, toVia, vs, dusk, 1.0, true],
+        [via, rand(2.5, 4.5), vs, dusk, 1.0, false],
+        [midPt, toMid, mds, day, 1.0, true],
+        [midPt, rand(2, 4), mds, day, 1.0, false],
+        [outPt, toMid, os, lit, 1.0, true],
+        [outPt, rand(20, 28), os, lit, 1.0, false],
+        [midPt, toMid, mds, day, 1.0, true],
+        [midPt, rand(1.5, 3), mds, day, 1.0, false],
+        [via, toMid, vs, dusk, 1.0, true],
+        [mouth, toVia, ms, shadow, 0.85, true],
+        [home, 10.0, hs, black, 0.0, true],
+        [home, 2.0, hs, black, 0.0, false]
+    ]
+    duration = 0.0
+    for each st in stops
+        duration = duration + st[1]
+    end for
+    keys = []
+    points = []
+    scales = []
+    colors = []
+    alphas = []
+    walking = []
+    acc = 0.0
+    for each st in stops
+        prevKey = acc / duration
+        acc = acc + st[1]
+        keys.push(acc / duration)
+        points.push(st[0])
+        scales.push(st[2])
+        colors.push(st[3])
+        alphas.push(st[4])
+        if st[5] then walking.push([prevKey, acc / duration])
+    end for
 
     ' Poster translation is its top-left; points are where its feet go.
     translations = []
@@ -305,25 +356,29 @@ sub critterTrip(cr as object, delay as float)
     cr.opacity.key = keys
     cr.opacity.keyValue = alphas
 
-    ' Scuttle (a quick side-to-side rock) only while walking.
+    ' While walking, an irregular tilt like picking its way over uneven sand:
+    ' each new lean comes after a random 0.4-1.4 s, and is a random size that
+    ' only partly undoes the last one, so it sometimes leans the same way twice
+    ' and never settles into a steady back-and-forth.
+    ' tilt is a constant lean that levels the sprite itself, which sits
+    ' slightly tipped to the left (radians; negative is clockwise).
+    tilt = c.tilt
     rk = []
     rv = []
-    walking = [[0.0, 0.30], [0.70, 0.98]]
-    stepT = 0.6 / duration
-    rk.push(0.0) : rv.push(0.0)
+    rk.push(0.0) : rv.push(tilt)
     for each seg in walking
         ' Hold still (0) right up to the start of each walk, not drift into it.
-        if seg[0] > rk[rk.count() - 1] then rk.push(seg[0]) : rv.push(0.0)
-        t = seg[0] + stepT
-        sign = 1
+        if seg[0] > rk[rk.count() - 1] then rk.push(seg[0]) : rv.push(tilt)
+        t = seg[0] + rand(0.4, 1.4) / duration
+        lean = 0.0
         while t < seg[1]
-            rk.push(t) : rv.push(0.012 * sign)
-            sign = -sign
-            t = t + stepT
+            lean = lean * 0.35 + rand(-0.018, 0.018)
+            rk.push(t) : rv.push(tilt + lean)
+            t = t + rand(0.4, 1.4) / duration
         end while
-        rk.push(seg[1]) : rv.push(0.0)
+        rk.push(seg[1]) : rv.push(tilt)
     end for
-    rk.push(1.0) : rv.push(0.0)
+    rk.push(1.0) : rv.push(tilt)
     cr.rotation.key = rk
     cr.rotation.keyValue = rv
 
@@ -336,6 +391,12 @@ sub critterTrip(cr as object, delay as float)
         cr.timer.control = "start"
     end if
 end sub
+
+function pathLength(a as object, b as object) as float
+    dx = b[0] - a[0]
+    dy = b[1] - a[1]
+    return Sqr(dx * dx + dy * dy)
+end function
 
 ' ---------------------------------------------------------------- fish
 
