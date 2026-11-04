@@ -1,0 +1,19 @@
+{
+  "background": "bg_01_4k_epic",
+  "decor": {"rock": "rock_08", "seagrass": "seagrass_00"},
+  "critters": {"crab": "crab_12"},
+  "fish": {
+    "clownfish":     {"candidate": "clownfish_01",     "facing": "right"},
+    "blue_tang":     {"candidate": "blue_tang_01",     "facing": "right"},
+    "yellow_tang":   {"candidate": "yellow_tang_01",   "facing": "right"},
+    "moorish_idol":  {"candidate": "moorish_idol_02",  "facing": "right"},
+    "emperor_angel": {"candidate": "emperor_angel_02", "facing": "right"},
+    "royal_gramma":  {"candidate": "royal_gramma_00",  "facing": "right"},
+    "butterflyfish": {"candidate": "butterflyfish_01", "facing": "left"},
+    "flame_angel":   {"candidate": "flame_angel_01",   "facing": "right"},
+    "mandarin":      {"candidate": "mandarin_01",      "facing": "right"},
+    "lionfish":      {"candidate": "lionfish_00",      "facing": "right"},
+    "reef_shark":    {"candidate": "reef_shark_05",    "facing": "right"},
+    "chromis":      {"candidate": "chromis_03",       "facing": "right"}
+  }
+}

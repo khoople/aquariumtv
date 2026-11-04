@@ -1,0 +1,22 @@
+[
+ {
+  "id": "rock",
+  "x": 1487,
+  "y": 740,
+  "w": 637,
+  "h": 430,
+  "sway": 0,
+  "swayPeriod": 18,
+  "bubbles": 0
+ },
+ {
+  "id": "seagrass",
+  "x": 110,
+  "y": 790,
+  "w": 269,
+  "h": 380,
+  "sway": 0.008,
+  "swayPeriod": 18,
+  "bubbles": 8
+ }
+]

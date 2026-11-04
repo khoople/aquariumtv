@@ -1,0 +1,12 @@
+{
+  "seed": 1538521082,
+  "prompt": "photograph of a single blacktip reef shark, sleek streamlined grey-bronze body, white belly, distinctive black tips on the dorsal and tail fins, entire fish fully visible, full body side view in profile, facing right, isolated on a plain pure white background, studio lighting, sharp focus, highly detailed scales and fins",
+  "negative_prompt": "multiple fish, two fish, cropped, cut off, out of frame, partial, text, watermark, water, bubbles, aquarium, coral, rocks, background scenery, shadow, blurry, deformed, extra fins, extra eyes",
+  "width": 1344,
+  "height": 768,
+  "enable_hr": true,
+  "hr_scale": 1.5,
+  "hr_upscaler": "R-ESRGAN 4x+",
+  "denoising_strength": 0.4,
+  "hr_second_pass_steps": 6
+}

@@ -1,0 +1,16 @@
+AquariumTV Privacy Policy
+Last updated: November 3, 2026
+
+AquariumTV is a screensaver for Roku devices, made by Kevin Hoople.
+
+AquariumTV does not collect, store, or share any personal information or usage
+data. It has no accounts, no sign-in, no advertising, no analytics, and no
+tracking. It does not connect to the internet or any server while it runs. All
+of its images are built into the app.
+
+Your Roku device and the Roku platform may collect information on their own,
+as described in Roku's privacy policy (https://www.roku.com/legal). That
+collection is done by Roku, not by AquariumTV, and is outside its control.
+
+If this policy changes, the updated version will be posted here with a new
+"Last updated" date.

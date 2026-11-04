@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="AquariumScene" extends="Scene">
+    <script type="text/brightscript" uri="pkg:/components/AquariumScene.brs" />
+    <children>
+        <!-- Slightly oversized so it can drift slowly (keeps the screen from burning in). -->
+        <!-- Critters sit on the background, so they drift with it as one group. -->
+        <Group id="backdrop">
+            <Poster id="background" uri="pkg:/images/background.jpg" width="2016" height="1134" />
+            <Group id="critterLayer" />
+        </Group>
+        <Group id="farLayer" />
+        <!-- Beams are split across three layers that fade out of phase, so they shimmer independently. -->
+        <!-- They fan out from the sun above the top edge (SUN / RAYS_PAD in tools/process.py)
+             and sway by rotating gently around it. -->
+        <Group id="rays" translation="[-90, 0]" scaleRotateCenter="[992.4, -324]">
+            <Poster id="rays0" uri="pkg:/images/rays_0.png" width="2100" height="1080" />
+            <Poster id="rays1" uri="pkg:/images/rays_1.png" width="2100" height="1080" />
+            <Poster id="rays2" uri="pkg:/images/rays_2.png" width="2100" height="1080" />
+        </Group>
+        <Group id="midLayer" />
+        <Group id="nearLayer" />
+        <!-- Rock and plant in front of every fish; filled from images/decor.json. -->
+        <Group id="foreground" />
+
+        <Animation id="bgDrift" duration="180" repeat="true" easeFunction="inOutQuad">
+            <Vector2DFieldInterpolator fieldToInterp="backdrop.translation"
+                key="[0.0, 0.5, 1.0]" keyValue="[[0, 0], [-96, -54], [0, 0]]" />
+            <!-- Parallax: the foreground is nearer the camera, so it shifts further. -->
+            <Vector2DFieldInterpolator fieldToInterp="foreground.translation"
+                key="[0.0, 0.5, 1.0]" keyValue="[[0, 0], [-170, -60], [0, 0]]" />
+        </Animation>
+        <!-- Cycle lengths don't divide evenly, so the combined pattern takes minutes to repeat. -->
+        <Animation id="rayShimmer0" duration="4.3" repeat="true" easeFunction="linear">
+            <FloatFieldInterpolator fieldToInterp="rays0.opacity"
+                key="[0.0, 0.18, 0.31, 0.5, 0.64, 0.82, 1.0]"
+                keyValue="[0.55, 1.0, 0.7, 0.25, 0.85, 0.4, 0.55]" />
+        </Animation>
+        <Animation id="rayShimmer1" duration="6.1" repeat="true" easeFunction="linear">
+            <FloatFieldInterpolator fieldToInterp="rays1.opacity"
+                key="[0.0, 0.14, 0.37, 0.52, 0.71, 0.88, 1.0]"
+                keyValue="[0.3, 0.75, 0.95, 0.35, 0.6, 1.0, 0.3]" />
+        </Animation>
+        <Animation id="rayShimmer2" duration="7.9" repeat="true" easeFunction="linear">
+            <FloatFieldInterpolator fieldToInterp="rays2.opacity"
+                key="[0.0, 0.22, 0.4, 0.58, 0.77, 1.0]"
+                keyValue="[0.9, 0.35, 0.8, 1.0, 0.2, 0.9]" />
+        </Animation>
+        <Animation id="raySway" duration="13" repeat="true" easeFunction="inOutQuad">
+            <!-- Radians; about ±1.1 degrees. -->
+            <FloatFieldInterpolator fieldToInterp="rays.rotation"
+                key="[0.0, 0.5, 1.0]" keyValue="[-0.02, 0.02, -0.02]" />
+        </Animation>
+    </children>
+</component>

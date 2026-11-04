@@ -1,0 +1,74 @@
+[
+ {
+  "id": "clownfish",
+  "kind": "solo",
+  "w": 195,
+  "h": 127
+ },
+ {
+  "id": "blue_tang",
+  "kind": "solo",
+  "w": 270,
+  "h": 182
+ },
+ {
+  "id": "yellow_tang",
+  "kind": "solo",
+  "w": 245,
+  "h": 142
+ },
+ {
+  "id": "moorish_idol",
+  "kind": "solo",
+  "w": 300,
+  "h": 197
+ },
+ {
+  "id": "emperor_angel",
+  "kind": "solo",
+  "w": 325,
+  "h": 220
+ },
+ {
+  "id": "royal_gramma",
+  "kind": "solo",
+  "w": 145,
+  "h": 75
+ },
+ {
+  "id": "butterflyfish",
+  "kind": "solo",
+  "w": 220,
+  "h": 170
+ },
+ {
+  "id": "flame_angel",
+  "kind": "solo",
+  "w": 200,
+  "h": 139
+ },
+ {
+  "id": "mandarin",
+  "kind": "solo",
+  "w": 140,
+  "h": 101
+ },
+ {
+  "id": "lionfish",
+  "kind": "solo",
+  "w": 320,
+  "h": 248
+ },
+ {
+  "id": "reef_shark",
+  "kind": "shark",
+  "w": 840,
+  "h": 282
+ },
+ {
+  "id": "chromis",
+  "kind": "school",
+  "w": 105,
+  "h": 67
+ }
+]

@@ -1,0 +1,66 @@
+{
+  "model": "realvisxlV50_v50LightningBakedvae.safetensors",
+  "sampler": "DPM++ SDE",
+  "scheduler": "Karras",
+  "steps": 6,
+  "cfg_scale": 1.8,
+
+  "background": {
+    "prompt": "wide view inside a beautiful saltwater reef aquarium, vibrant coral reef rock formations along the bottom and sides, soft corals, sea anemones, white sand floor, deep blue open water in the center and upper area, gentle sunlight caustics, soft god rays from the surface, no fish, serene, photorealistic, 8k, highly detailed",
+    "negative": "fish, animals, people, text, watermark, logo, frame, glass reflection, blurry, lowres, cartoon",
+    "width": 1344,
+    "height": 768,
+    "hr_scale": 1.5,
+    "hr_denoise": 0.35,
+    "candidates": 4
+  },
+
+  "fish_common": {
+    "prompt": "photograph of a single {name}, {desc}, entire fish fully visible, full body side view in profile, facing right, isolated on a plain pure white background, studio lighting, sharp focus, highly detailed scales and fins",
+    "negative": "multiple fish, two fish, cropped, cut off, out of frame, partial, text, watermark, water, bubbles, aquarium, coral, rocks, background scenery, shadow, blurry, deformed, extra fins, extra eyes",
+    "width": 1216,
+    "height": 832,
+    "candidates": 4
+  },
+
+  "fish": [
+    {"id": "clownfish",   "name": "clownfish",        "desc": "bright orange with three white bands outlined in black",          "size": 195, "kind": "solo"},
+    {"id": "blue_tang",   "name": "blue tang fish",   "desc": "royal blue body with black markings and a yellow tail",           "size": 270, "kind": "solo"},
+    {"id": "yellow_tang", "name": "yellow tang fish", "desc": "bright lemon yellow disc-shaped body",                            "size": 245, "kind": "solo"},
+    {"id": "moorish_idol","name": "moorish idol fish","desc": "black, white and yellow vertical bands with a long trailing dorsal fin", "size": 300, "kind": "solo"},
+    {"id": "emperor_angel","name": "emperor angelfish","desc": "blue and yellow horizontal stripes, adult coloration",            "size": 325, "kind": "solo"},
+    {"id": "royal_gramma","name": "royal gramma fish","desc": "front half vivid purple, back half bright yellow",                 "size": 145, "kind": "solo"},
+    {"id": "butterflyfish","name": "copperband butterflyfish","desc": "white body with copper orange vertical bands and a long snout", "size": 220, "kind": "solo"},
+    {"id": "flame_angel", "name": "flame angelfish",  "desc": "vivid red-orange body with thin black vertical bars and blue-tipped fins", "size": 200, "kind": "solo"},
+    {"id": "mandarin",    "name": "mandarin dragonet fish", "desc": "psychedelic swirling blue, orange and green pattern, large sail-like dorsal fin", "size": 140, "kind": "solo"},
+    {"id": "lionfish",    "name": "red lionfish",     "desc": "maroon and white zebra stripes, long feathery venomous spines and fan-like pectoral fins", "size": 320, "kind": "solo"},
+    {"id": "reef_shark",  "name": "blacktip reef shark", "desc": "sleek streamlined grey-bronze body, white belly, distinctive black tips on the dorsal and tail fins", "size": 840, "kind": "shark",
+     "width": 1344, "height": 768, "hr_scale": 1.5, "hr_denoise": 0.4},
+    {"id": "chromis",  "name": "blue green chromis fish","desc": "small iridescent blue-green fish",                          "size": 105, "kind": "school"}
+  ],
+
+  "decor_common": {
+    "suffix": "isolated on a plain pure white background, entire object fully visible, studio lighting, sharp focus, photorealistic, highly detailed",
+    "negative": "fish, animals, water, bubbles, aquarium, scenery, background, shadow, text, watermark, cropped, cut off, blurry",
+    "candidates": 4
+  },
+
+  "decor": [
+    {"id": "rock",  "prompt": "a single large reef live rock covered in pink coralline algae, small zoanthid polyps and a few short branching corals, wide and low with a flat base",
+     "width": 1216, "height": 832, "hr_scale": 1.5, "hr_denoise": 0.4,
+     "x": 1487, "h": 430, "sink": 90, "flip": true, "defocus": 0.4, "sway": 0},
+    {"id": "seagrass", "prompt": "professional macro photograph of a dense lush clump of marine seagrass, many long slender ribbon-like leaves growing upward and gently arching, crisp leaf edges, fine parallel leaf veins, rich natural green with subtle yellow tips, rooted in a small mound of sand",
+     "width": 832, "height": 1216, "hr_scale": 1.5, "hr_denoise": 0.4,
+     "x": 110, "h": 380, "sink": 90, "defocus": 0.4, "sway": 0.008, "sway_period": 18, "bubbles": 8}
+  ],
+
+  "critters": [
+    {"id": "crab", "prompt": "a chunky stocky red and orange reef crab, front view facing the camera, symmetrical, wide rounded heavy shell, short thick sturdy legs tucked close to the body, big bulky claws held in front, compact solid silhouette, entire crab visible",
+     "width": 1216, "height": 832, "hr_scale": 1.5, "hr_denoise": 0.4, "size": 110,
+     "home": [1010, 880], "mouth": [1015, 935], "home_scale": 0.75,
+     "_comment": "sand_x is where the crab's whole body must stay (left of the rock beside the cave); sand_y is where its feet stop",
+     "sand_x": [830, 1065], "sand_y": [970, 1010],
+     "bubbles": 3, "bubble_from": [1010, 855],
+     "bubble_dark_until": 770, "bubble_lit_by": 725}
+  ]
+}

@@ -1,0 +1,31 @@
+[
+ {
+  "id": "crab",
+  "w": 110,
+  "h": 57,
+  "home": [
+   1010,
+   880
+  ],
+  "mouth": [
+   1015,
+   935
+  ],
+  "sandX": [
+   830,
+   1065
+  ],
+  "sandY": [
+   970,
+   1010
+  ],
+  "homeScale": 0.75,
+  "bubbles": 3,
+  "bubbleFrom": [
+   1010,
+   855
+  ],
+  "bubbleDarkUntil": 770,
+  "bubbleLitBy": 725
+ }
+]

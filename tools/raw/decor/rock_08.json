@@ -1,0 +1,12 @@
+{
+  "seed": 1385071818,
+  "prompt": "a single large reef live rock covered in pink coralline algae, small zoanthid polyps and a few short branching corals, wide and low with a flat base, isolated on a plain pure white background, entire object fully visible, studio lighting, sharp focus, photorealistic, highly detailed",
+  "negative_prompt": "fish, animals, water, bubbles, aquarium, scenery, background, shadow, text, watermark, cropped, cut off, blurry",
+  "width": 1216,
+  "height": 832,
+  "enable_hr": true,
+  "hr_scale": 1.5,
+  "hr_upscaler": "R-ESRGAN 4x+",
+  "denoising_strength": 0.4,
+  "hr_second_pass_steps": 6
+}

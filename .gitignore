@@ -1,0 +1,26 @@
+# Python environment and caches
+tools/.venv/
+__pycache__/
+*.py[cod]
+
+# Build output: rebuild with tools/package.py
+dist/
+
+# Regenerable pipeline caches: the background-removal cache (process.py
+# recreates it) and contact sheets (process.py --sheets recreates them)
+tools/raw/cutouts/
+tools/raw/sheets/
+
+# OS and editor clutter
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+.vscode/
+.idea/
+
+art/poster.psd
+# Kept on purpose:
+#   tools/raw/{background,fish,decor,critters}/  chosen SD images; SD can't regenerate them exactly
+#   roku/images/                                 packaged assets; packaging works without the SD pipeline
+#   store/                                       source artwork and store listing images

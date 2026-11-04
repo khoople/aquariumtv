@@ -1,0 +1,33 @@
+AquariumTV Terms of Use
+Last updated: November 3, 2026
+
+AquariumTV is a free screensaver for Roku devices, made by Kevin Hoople. By
+installing or using it, you agree to these terms.
+
+1. Use
+   Anyone may install and use AquariumTV for personal, non-commercial viewing
+   on their Roku devices.
+
+2. Ownership
+   AquariumTV, including its artwork and code, belongs to Kevin Hoople. These
+   terms don't grant you the right to copy, modify, resell, or redistribute it.
+
+3. No warranty
+   AquariumTV is provided "as is" and "as available", without warranty of any
+   kind, express or implied. This includes, but isn't limited to, warranties of
+   merchantability, fitness for a particular purpose, and non-infringement.
+   There is no guarantee that it will work without interruption or errors, or
+   that it will remain available.
+
+4. Limitation of liability
+   To the fullest extent permitted by law, Kevin Hoople is not liable for any
+   damages arising from the use of, or inability to use, AquariumTV. This
+   includes any damage to your device or display.
+
+5. Changes
+   AquariumTV and these terms may be updated or discontinued at any time.
+   Continuing to use AquariumTV after a change means you accept the updated
+   terms.
+
+6. Privacy
+   AquariumTV collects no information. See the AquariumTV Privacy Policy.
